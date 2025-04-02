@@ -11,82 +11,27 @@ public class LibrosController : Controller
         _context = context;
     }
 
-    // Acción para mostrar los comentarios de un libro
-    public IActionResult Index(int idLibro)
+    public IActionResult Index(int idAutor)
     {
-        var libro = _context.Libros
-            .Include(l => l.autor)
-            .FirstOrDefault(l => l.Id == idLibro);  // Usar id_libro en lugar de idAutor
-
-        if (libro == null)
+        var autor = _context.Autores.Find(idAutor);
+        if (autor == null)
         {
             return NotFound();
         }
 
-        // Guardar el id del libro en la sesión
-        HttpContext.Session.SetInt32("idLibroSeleccionado", idLibro);
-        HttpContext.Session.SetString("tituloLibroSeleccionado", libro.nombre);  // Cambié 'titulo' por 'nombre'
+        // Guardar el autor seleccionado en la sesión
+        HttpContext.Session.SetInt32("idAutorSeleccionado", idAutor);
+        HttpContext.Session.SetString("nombreAutorSeleccionado", autor.autor);
 
-        var comentarios = _context.Comentarios
-            .Where(c => c.idLibro == idLibro)
-            .Include(c => c.id_libro)
+        // Obtener los libros del autor seleccionado
+        var libros = _context.Libros
+            .Where(l => l.id_autor == idAutor)
+            .Include(l => l.autor)
             .ToList();
 
-        ViewBag.NombreAutor = libro.autor.autor;
-        ViewBag.TituloLibro = libro.nombre;
-
-        return View(comentarios);  // Mostrar los comentarios del libro seleccionado
+        return View(libros);
     }
 
-    // Acción para mostrar el formulario de nuevo comentario
-    public IActionResult NuevoComentario()
-    {
-        var idLibro = HttpContext.Session.GetInt32("idLibroSeleccionado");
-        if (idLibro == null)
-        {
-            return RedirectToAction("Index", "Autores");
-        }
-
-        ViewBag.NombreAutor = HttpContext.Session.GetString("NombreAutorSeleccionado");
-        ViewBag.TituloLibro = HttpContext.Session.GetString("tituloLibroSeleccionado");
-
-        var nuevoComentario = new Comentarios
-        {
-            idLibro = idLibro.Value,
-            createdAt = DateTime.Now
-        };
-
-        return View(nuevoComentario);
-    }
-
-    // Acción para guardar un nuevo comentario
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult GuardarComentario(Comentarios comentario)
-    {
-        if (ModelState.IsValid)
-        {
-            comentario.createdAt = DateTime.Now;
-            _context.Comentarios.Add(comentario);
-            _context.SaveChanges();
-            return RedirectToAction("Index", new { idLibro = comentario.idLibro });
-        }
-
-        ViewBag.NombreAutor = HttpContext.Session.GetString("NombreAutorSeleccionado");
-        ViewBag.TituloLibro = HttpContext.Session.GetString("tituloLibroSeleccionado");
-
-        return View("NuevoComentario", comentario);
-    }
-
-    // Acción para volver a la lista de libros del autor
-    public IActionResult VolverALibros()
-    {
-        var idAutor = HttpContext.Session.GetInt32("idAutorSeleccionado");
-        if (idAutor == null)
-        {
-            return RedirectToAction("Index", "Autores");
-        }
-
-        return RedirectToAction("Index", "Autores", new { idAutor = idAutor });
-    }
+    // Acción para mostrar los comentarios de un libro
+    
 }

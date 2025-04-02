@@ -34,13 +34,11 @@ namespace L02P02_2022HM651_2022DP650.Controllers
             HttpContext.Session.SetInt32("idAutorSeleccionado", idAutor);
             HttpContext.Session.SetString("nombreAutorSeleccionado", autor.autor);
 
-            var libros = _context.Libros
-                .Where(l => l.id_autor == idAutor)
-                .Include(l => l.autor)
-                .ToList();
-
-            return View(libros);
+            // Redirigir a la acción Index en el controlador Libros, pasando el idAutor
+            return RedirectToAction("Index", "Libros", new { idAutor = idAutor });
         }
+
+
 
         // Acción para manejar la vuelta al listado de autores
         public IActionResult Volver()

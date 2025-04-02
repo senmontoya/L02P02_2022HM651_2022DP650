@@ -35,8 +35,8 @@
                                 <tr>
                                     <td>@autor.autor</td>
                                     <td class="text-end">
-                                        @Html.ActionLink("Seleccionar", "LibrosPorAutor", new { idAutor = autor.Id },
-                                                 new { @class = "btn btn-success" })
+                                        @Html.ActionLink("Seleccionar", "Index", "Libros", new { idAutor = autor.Id }, new { @class = "btn btn-success" })
+
                                     </td>
                                 </tr>
                             }

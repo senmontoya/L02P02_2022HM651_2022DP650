@@ -1,7 +1,6 @@
-﻿@model IEnumerable<L02P02_2022HM651_2022DP650.Models.Libros>
+﻿@model IEnumerable<L02P02_2022HM651_2022DP650.Models.Autores>
 @{
-    ViewData["Title"] = "Libros por Autor";
-    var autorNombre = ViewContext.HttpContext.Session.GetString("nombreAutorSeleccionado");
+    ViewData["Title"] = "Comentarios por Libros";
 }
 
 <div class="bg-dark text-white p-4 text-center">
@@ -13,80 +12,111 @@
 </div>
 
 <div class="container mt-4">
-    <!-- Progress bar steps -->
-    <div class="d-flex justify-content-between align-items-center position-relative mb-5">
-        <!-- Progress line -->
-        <div class="position-absolute" style="height: 2px; background-color: #ddd; width: 100%; z-index: 1;"></div>
+    <!-- Barra de progreso -->
+    <ul class="progressbar">
+        <li class="active">Autores</li>
+        <li>Libros</li>
+        <li>Comentarios Existentes</li>
+        <li>Nuevo Comentario</li>
+    </ul>
 
-        <!-- Step 1: Autores - Completed -->
-        <div class="text-center position-relative" style="z-index: 2;">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-secondary text-white"
-                 style="width: 30px; height: 30px;">
-                1
-            </div>
-            <span class="d-block mt-2 small">AUTORES</span>
-        </div>
-
-        <!-- Step 2: Libros - Current -->
-        <div class="text-center position-relative" style="z-index: 2;">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white"
-                 style="width: 30px; height: 30px;">
-                2
-            </div>
-            <span class="d-block mt-2 small text-success">LIBROS</span>
-        </div>
-
-        <!-- Step 3: Comentarios existentes - Upcoming -->
-        <div class="text-center position-relative" style="z-index: 2;">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-light text-dark"
-                 style="width: 30px; height: 30px;">
-                3
-            </div>
-            <span class="d-block mt-2 small">COMENTARIOS EXISTENTES</span>
-        </div>
-
-        <!-- Step 4: Nuevo comentario - Upcoming -->
-        <div class="text-center position-relative" style="z-index: 2;">
-            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-light text-dark"
-                 style="width: 30px; height: 30px;">
-                4
-            </div>
-            <span class="d-block mt-2 small">NUEVO COMENTARIO</span>
-        </div>
-    </div>
-
-    <!-- Autor section -->
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <div class="text-primary">Autor:</div>
-        </div>
-        <div class="card-body">
-            <h5>@autorNombre</h5>
-        </div>
-    </div>
-
-    <!-- Libros section -->
     <div class="card">
         <div class="card-header bg-light">
-            <div class="text-primary">Seleccione el Libro del autor</div>
+            <h5 class="mb-0 text-primary">Selecciona un Autor</h5>
         </div>
-        <div class="card-body p-0">
-            <div class="list-group list-group-flush">
-                @foreach (var libro in Model)
-                {
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>@libro.nombre</span>
-                        @Html.ActionLink("Seleccionar", "ComentariosPorLibro", "Libros",
-                                 new { idLibro = libro.Id },
-                                 new { @class = "btn btn-success" })
-                    </div>
-                }
-            </div>
+        <div class="card-body">
+            @using (Html.BeginForm("LibrosPorAutor", "Autores", FormMethod.Get, new { id = "formAutores" }))
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                            @foreach (var autor in Model)
+                            {
+                                <tr>
+                                    <td>@autor.autor</td>
+                                    <td class="text-end">
+                                        @Html.ActionLink("Seleccionar", "Index", "Libros", new { idAutor = autor.Id }, new { @class = "btn btn-success" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 <footer class="bg-dark text-white text-center p-3 mt-5">
-    <p class="mb-0">YYYY-DD-NN - NOMBRE DEL ALUMNO UNO</p>
-    <p class="mb-0">YYYY-DD-NN - NOMBRE DEL ALUMNO DOS</p>
+    <p class="mb-0">YYYY-DD-NN - Alfredo Antonio Hernandez Montoya</p>
+    <p class="mb-0">YYYY-DD-NN - Harry Adonay Damian Perez</p>
 </footer>
+
+<style>
+    .container {
+        width: 100%;
+        margin: 100px auto;
+    }
+
+    .progressbar {
+        margin: 0;
+        padding: 0;
+        counter-reset: step;
+        clear: both;
+    }
+
+        .progressbar li {
+            list-style-type: none;
+            width: 25%;
+            float: left;
+            font-size: 12px;
+            position: relative;
+            text-align: center;
+            text-transform: uppercase;
+            color: #7d7d7d;
+        }
+
+            .progressbar li:before {
+                width: 30px;
+                height: 30px;
+                content: counter(step);
+                counter-increment: step;
+                line-height: 30px;
+                border: 2px solid #7d7d7d;
+                display: block;
+                text-align: center;
+                margin: 0 auto 10px auto;
+                border-radius: 50%;
+                background-color: white;
+            }
+
+            .progressbar li:after {
+                width: 100%;
+                height: 2px;
+                content: "";
+                position: absolute;
+                background-color: #7d7d7d;
+                top: 15px;
+                left: -50%;
+                z-index: -1;
+            }
+
+            .progressbar li:first-child:after {
+                content: none;
+            }
+
+            .progressbar li.active {
+                color: green;
+                font-weight: bold;
+                font-style: italic;
+                text-decoration: underline;
+            }
+
+                .progressbar li.active:before {
+                    border-color: #55b776;
+                }
+
+                .progressbar li.active + li:after {
+                    background-color: #55b776;
+                }
+</style>
