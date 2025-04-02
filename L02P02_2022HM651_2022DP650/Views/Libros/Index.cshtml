@@ -1,6 +1,7 @@
-﻿@model IEnumerable<L02P02_2022HM651_2022DP650.Models.Autores>
+﻿@model IEnumerable<L02P02_2022HM651_2022DP650.Models.Libros>
 @{
-    ViewData["Title"] = "Comentarios por Libros";
+    ViewData["Title"] = "Libros por Autor";
+    var autorNombre = ViewContext.HttpContext.Session.GetString("nombreAutorSeleccionado");
 }
 
 <div class="bg-dark text-white p-4 text-center">
@@ -14,35 +15,39 @@
 <div class="container mt-4">
     <!-- Barra de progreso -->
     <ul class="progressbar">
-        <li class="active">Autores</li>
-        <li>Libros</li>
+        <li>Autores</li>
+        <li class="active">Libros</li>
         <li>Comentarios Existentes</li>
         <li>Nuevo Comentario</li>
     </ul>
 
-    <div class="card">
+    <!-- Sección del Autor -->
+    <div class="card mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0 text-primary">Selecciona un Autor</h5>
+            <div class="text-primary">Autor:</div>
         </div>
         <div class="card-body">
-            @using (Html.BeginForm("LibrosPorAutor", "Autores", FormMethod.Get, new { id = "formAutores" }))
-            {
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <tbody>
-                            @foreach (var autor in Model)
-                            {
-                                <tr>
-                                    <td>@autor.autor</td>
-                                    <td class="text-end">
-                                        @Html.ActionLink("Seleccionar", "Index", "Libros", new { idAutor = autor.Id }, new { @class = "btn btn-success" })
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
+            <h5>@autorNombre</h5>
+        </div>
+    </div>
+
+    <!-- Sección de Libros -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <div class="text-primary">Seleccione el Libro del autor</div>
+        </div>
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                @foreach (var libro in Model)
+                {
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@libro.nombre</span>
+                        @Html.ActionLink("Seleccionar", "Index", "Libros",
+                                 new { idLibro = libro.Id },
+                                 new { @class = "btn btn-success" })
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -63,12 +68,13 @@
         padding: 0;
         counter-reset: step;
         clear: both;
+        display: flex;
+        justify-content: space-between;
     }
 
         .progressbar li {
             list-style-type: none;
             width: 25%;
-            float: left;
             font-size: 12px;
             position: relative;
             text-align: center;

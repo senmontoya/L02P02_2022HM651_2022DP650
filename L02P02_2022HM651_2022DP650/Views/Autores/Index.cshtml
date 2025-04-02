@@ -25,7 +25,7 @@
             <h5 class="mb-0 text-primary">Autor</h5>
         </div>
         <div class="card-body">
-            @using (Html.BeginForm("LibrosPorAutor", "Autores", FormMethod.Get, new { id = "formAutores" }))
+            @using (Html.BeginForm("Index", "Libros", FormMethod.Get, new { id = "formAutores" }))
             {
                 <div class="table-responsive">
                     <table class="table table-hover">
