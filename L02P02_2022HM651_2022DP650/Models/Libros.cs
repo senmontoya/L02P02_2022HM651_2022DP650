@@ -16,13 +16,13 @@ namespace L02P02_2022HM651_2022DP650.Models
         public string? descripcion { get; set; }
 
         [StringLength(255)]
-        public string? urlImagen { get; set; }
+        public string? url_imagen { get; set; }
 
         [Required]
-        public int? idAutor { get; set; }
+        public int? id_autor { get; set; }
 
         [Required]
-        public int? idCategoria { get; set; }
+        public int? id_categoria { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
@@ -31,10 +31,10 @@ namespace L02P02_2022HM651_2022DP650.Models
         [Required]
         public char? estado { get; set; }
 
-        [ForeignKey("IdAutor")]
-        public Autores autor { get; set; }
+        [ForeignKey("Id_autor")]
+        public Autores? autor { get; set; }
 
-        [ForeignKey("IdCategoria")]
-        public Categorias categoria { get; set; }
+        [ForeignKey("Id_categoria")]
+        public Categorias? categoria { get; set; }
     }
 }
