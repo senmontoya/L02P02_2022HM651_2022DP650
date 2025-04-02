@@ -19,11 +19,9 @@ public class LibrosController : Controller
             return NotFound();
         }
 
-        // Guardar el autor seleccionado en la sesión
         HttpContext.Session.SetInt32("idAutorSeleccionado", idAutor);
         HttpContext.Session.SetString("nombreAutorSeleccionado", autor.autor);
 
-        // Obtener los libros del autor seleccionado
         var libros = _context.Libros
             .Where(l => l.id_autor == idAutor)
             .Include(l => l.autor)
@@ -32,6 +30,5 @@ public class LibrosController : Controller
         return View(libros);
     }
 
-    // Acción para mostrar los comentarios de un libro
     
 }

@@ -13,9 +13,9 @@ builder.Services.AddDbContext<LibreriaContext>(options =>
 // Habilitar la sesión
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tiempo de expiración de la sesión
-    options.Cookie.HttpOnly = true;  // Hacer que las cookies solo sean accesibles por el servidor
-    options.Cookie.IsEssential = true;  // Necesario para cumplir con la ley GDPR
+    options.IdleTimeout = TimeSpan.FromMinutes(30); 
+    options.Cookie.HttpOnly = true;  
+    options.Cookie.IsEssential = true;  
 });
 
 var app = builder.Build();
