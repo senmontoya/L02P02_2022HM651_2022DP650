@@ -96,7 +96,7 @@ public class LibrosController : Controller
             return View("Comentarios", listaComentarios); // Asegura que se pasa una lista
         }
     }
-    [HttpGet]
+
     [HttpGet]
     public IActionResult ConfirmacionComentario(int idComentario)
     {
@@ -111,8 +111,35 @@ public class LibrosController : Controller
         var nombreLibro = HttpContext.Session.GetString("nombreLibroSeleccionado");
         var nombreAutor = HttpContext.Session.GetString("nombreAutorSeleccionado");
 
+        // Asegurar idAutorSeleccionado
+        var idAutorSeleccionado = HttpContext.Session.GetInt32("idAutorSeleccionado");
+        if (!idAutorSeleccionado.HasValue && idLibro.HasValue)
+        {
+            var libro = _context.Libros
+                .Include(l => l.autor)
+                .FirstOrDefault(l => l.Id == idLibro.Value);
+            if (libro != null)
+            {
+                idAutorSeleccionado = libro.id_autor;
+                HttpContext.Session.SetInt32("idAutorSeleccionado", idAutorSeleccionado.Value);
+            }
+        }
+
+        // Si nombreAutor es null, intentar recuperarlo
+        if (string.IsNullOrEmpty(nombreAutor) && idLibro.HasValue)
+        {
+            var libro = _context.Libros
+                .Include(l => l.autor)
+                .FirstOrDefault(l => l.Id == idLibro.Value);
+            if (libro != null)
+            {
+                nombreAutor = libro.autor?.autor;
+                HttpContext.Session.SetString("nombreAutorSeleccionado", nombreAutor ?? "Desconocido");
+            }
+        }
+
         ViewBag.NombreLibro = nombreLibro;
-        ViewBag.NombreAutor = nombreAutor;
-        return View("~/Views/Libros/ConfirmacionComentario.cshtml", comentario); 
+        ViewBag.NombreAutor = nombreAutor ?? "Autor no disponible";
+        return View("~/Views/Libros/ConfirmacionComentario.cshtml", comentario);
     }
 }
