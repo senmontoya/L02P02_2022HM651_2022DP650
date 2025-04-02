@@ -1,7 +1,6 @@
-﻿@model IEnumerable<L02P02_2022HM651_2022DP650.Models.Libros>
+﻿@model L02P02_2022HM651_2022DP650.Models.Comentarios
 @{
-    ViewData["Title"] = "Libros por Autor";
-    var autorNombre = ViewContext.HttpContext.Session.GetString("nombreAutorSeleccionado");
+    var idAutorSeleccionado = Context.Session.GetInt32("idAutorSeleccionado");
 }
 
 <div class="bg-dark text-white p-4 text-center">
@@ -15,9 +14,9 @@
 <div class="container mt-4">
     <ul class="progressbar">
         <li>Autores</li>
-        <li class="active">Libros</li>
+        <li>Libros</li>
         <li>Comentarios Existentes</li>
-        <li>Nuevo Comentario</li>
+        <li class="active">Nuevo Comentario</li>
     </ul>
 
     <div class="card mb-4">
@@ -25,26 +24,28 @@
             <div class="text-primary">Autor:</div>
         </div>
         <div class="card-body">
-            <h5>@autorNombre</h5>
+            <h5>@ViewBag.NombreAutor</h5>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <div class="text-primary">Libro:</div>
+        </div>
+        <div class="card-body">
+            <h5>@ViewBag.NombreLibro</h5>
         </div>
     </div>
 
     <div class="card">
         <div class="card-header bg-light">
-            <div class="text-primary">Seleccione el Libro del autor</div>
+            <div class="text-primary">Confirmación de Comentario</div>
         </div>
-        <div class="card-body p-0">
-            <div class="list-group list-group-flush">
-                @foreach (var libro in Model)
-                {
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>@libro.nombre</span>
-                        @Html.ActionLink("Seleccionar", "Comentarios", "Libros",
-                                 new { idLibro = libro.Id },
-                                 new { @class = "btn btn-success" })
-                    </div>
-                }
-            </div>
+        <div class="card-body">
+            <p><strong>Último Comentario:</strong> @Model.comentarios</p>
+            <p><strong>Usuario:</strong> @Model.usuario</p>
+            <p><strong>Fecha:</strong> @Model.createdAt</p>
+            <a asp-action="Index" asp-route-idAutor="@idAutorSeleccionado" class="btn btn-success">Volver al listado de libros</a>
         </div>
     </div>
 </div>

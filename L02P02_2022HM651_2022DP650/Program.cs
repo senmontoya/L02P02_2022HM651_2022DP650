@@ -6,17 +6,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configurar la base de datos
+// Configurar la base de datos (usar solo una cadena de conexión)
 builder.Services.AddDbContext<LibreriaContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Montoya")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Damian"))); // O "Damian", elige uno
 
 // Habilitar la sesión
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); 
-    options.Cookie.HttpOnly = true;  
-    options.Cookie.IsEssential = true;  
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
+
+// Registrar IHttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -24,8 +27,11 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage(); // Mostrar detalles de errores en desarrollo
 }
 
 app.UseHttpsRedirection();
